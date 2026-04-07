@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz UTS Hukum & HAM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .navigation-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .nav-btn {
+            width: 45px;
+            height: 45px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+            border-color: #adb5bd;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.answered-correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .nav-btn.answered-wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .nav-btn.answered-correct.active,
+        .nav-btn.answered-wrong.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .question-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid #e9ecef;
+            min-height: 400px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .progress {
+            font-size: 0.9rem;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #212529;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        .option-btn:hover:not(.revealed) {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+            transform: translateX(5px);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: #e9ecef;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 15px;
+            color: #495057;
+            flex-shrink: 0;
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-btn.correct .option-letter {
+            background: #28a745;
+            color: white;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: #dc3545;
+            color: white;
+        }
+
+        .option-btn.revealed {
+            cursor: default;
+        }
+
+        .result-display {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .result-display.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-display.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result-display.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .nav-arrow {
+            padding: 12px 30px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-arrow:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-arrow:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            padding: 10px 25px;
+            border: 2px solid #dc3545;
+            background: white;
+            color: #dc3545;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .stat-item span {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .percentage-stat {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .percentage-stat span {
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            }
+
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .option-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Quiz UTS Hukum & HAM</h1>
+            <p>Uji pemahaman Anda tentang Hukum dan Hak Asasi Manusia</p>
+            <div class="stats">
+                <div class="stat-item">Total: <span id="totalQuestions">133</span></div>
+                <div class="stat-item">Terjawab: <span id="answeredCount">0</span></div>
+                <div class="stat-item">Benar: <span id="correctCount">0</span></div>
+                <div class="stat-item percentage-stat">Skor: <span id="percentage">0%</span></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="navigation-panel">
+                <div class="nav-title">🎯 Navigasi Soal (Klik nomor untuk loncat)</div>
+                <div class="nav-grid" id="navGrid"></div>
+            </div>
+
+            <div class="question-area">
+                <div class="question-header">
+                    <div class="question-number" id="questionNumber">Soal #1</div>
+                    <div class="progress" id="progress">1 / 133</div>
+                </div>
+
+                <div class="question-text" id="questionText"></div>
+
+                <div class="options-container" id="optionsContainer"></div>
+
+                <div class="result-display" id="resultDisplay"></div>
+
+                <div class="navigation-controls">
+                    <button class="nav-arrow" id="prevBtn" onclick="goToPrev()">
+                        ← Sebelumnya
+                    </button>
+                    <button class="reset-btn" onclick="resetQuiz()">🔄 Reset</button>
+                    <button class="nav-arrow" id="nextBtn" onclick="goToNext()">
+                        Selanjutnya →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quizData = null;
+
+        async function loadQuizData() {
+            const response = await fetch('quiz-hukum-ham.json');
+            quizData = await response.json();
+            init();
+        }
+
+        // State
+        let currentQuestion = 0;
+        let userAnswers = {}; // questionIndex -> selectedOption
+        let revealed = {}; // questionIndex -> boolean
+
+        // Initialize
+        function init() {
+            createNavigation();
+            loadQuestion(0);
+            updateStats();
+        }
+
+        // Create navigation grid
+        function createNavigation() {
+            const navGrid = document.getElementById('navGrid');
+            navGrid.innerHTML = '';
+
+            quizData.questions.forEach((q, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.textContent = index + 1;
+                btn.onclick = () => loadQuestion(index);
+                btn.id = `nav-${index}`;
+                navGrid.appendChild(btn);
+            });
+        }
+
+        // Load question
+        function loadQuestion(index) {
+            currentQuestion = index;
+            const question = quizData.questions[index];
+
+            // Update navigation highlight
+            document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+                btn.classList.remove('active', 'answered-correct', 'answered-wrong');
+                if (i === index) btn.classList.add('active');
+
+                // Mark answered questions with correct/wrong color
+                if (userAnswers[i] !== undefined && revealed[i]) {
+                    const q = quizData.questions[i];
+                    const letters = ['a', 'b', 'c', 'd'];
+                    const isCorrect = letters[userAnswers[i]] === q.answer;
+                    btn.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+                }
+            });
+
+            // Update question display
+            document.getElementById('questionNumber').textContent = `Soal #${index + 1}`;
+            document.getElementById('progress').textContent = `${index + 1} / ${quizData.questions.length}`;
+            document.getElementById('questionText').textContent = question.text;
+
+            // Create options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            const letters = ['a', 'b', 'c', 'd'];
+            question.options.forEach((option, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="option-letter">${letters[i].toUpperCase()}</span> ${option}`;
+                btn.onclick = () => selectOption(i);
+                btn.id = `option-${i}`;
+
+                // If already answered, show result
+                if (revealed[index]) {
+                    btn.classList.add('revealed');
+                    if (letters[i] === question.answer) {
+                        btn.classList.add('correct');
+                    } else if (userAnswers[index] === i) {
+                        btn.classList.add('wrong');
+                    }
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Show result if already answered
+            const resultDisplay = document.getElementById('resultDisplay');
+            if (revealed[index]) {
+                const isCorrect = letters[userAnswers[index]] === question.answer;
+                resultDisplay.className = `result-display show ${isCorrect ? 'correct' : 'wrong'}`;
+                resultDisplay.innerHTML = isCorrect 
+                    ? '✅ Benar! Jawaban Anda tepat.' 
+                    : `❌ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
+            } else {
+                resultDisplay.className = 'result-display';
+                resultDisplay.innerHTML = '';
+            }
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === quizData.questions.length - 1;
+        }
+
+        // Select option
+        function selectOption(optionIndex) {
+            if (revealed[currentQuestion]) return; // Already answered
+
+            const question = quizData.questions[currentQuestion];
+            const letters = ['a', 'b', 'c', 'd'];
+            const selectedLetter = letters[optionIndex];
+            const isCorrect = selectedLetter === question.answer;
+
+            // Store answer
+            userAnswers[currentQuestion] = optionIndex;
+            revealed[currentQuestion] = true;
+
+            // Update option styles
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.classList.add('revealed');
+                if (letters[i] === question.answer) {
+                    btn.classList.add('correct');
+                } else if (i === optionIndex) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            // Show result
+            const resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.className = `result-display show ${isCorrect ? 'correct' : 'wrong'}`;
+            resultDisplay.innerHTML = isCorrect 
+                ? '✅ Benar! Jawaban Anda tepat.' 
+                : `❌ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
+
+            // Update navigation with correct/wrong color
+            const navBtn = document.getElementById(`nav-${currentQuestion}`);
+            navBtn.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+            updateStats();
+        }
+
+        // Navigation functions
+        function goToPrev() {
+            if (currentQuestion > 0) {
+                loadQuestion(currentQuestion - 1);
+            }
+        }
+
+        function goToNext() {
+            if (currentQuestion < quizData.questions.length - 1) {
+                loadQuestion(currentQuestion + 1);
+            }
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            if (confirm('Yakin ingin mereset semua jawaban?')) {
+                userAnswers = {};
+                revealed = {};
+                currentQuestion = 0;
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('answered-correct', 'answered-wrong');
+                });
+                loadQuestion(0);
+                updateStats();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const answered = Object.keys(userAnswers).length;
+            let correct = 0;
+
+            Object.keys(userAnswers).forEach(index => {
+                const q = quizData.questions[index];
+                const letters = ['a', 'b', 'c', 'd'];
+                if (letters[userAnswers[index]] === q.answer) {
+                    correct++;
+                }
+            });
+
+            // Calculate percentage
+            const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('percentage').textContent = percentage + '%';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') goToPrev();
+            if (e.key === 'ArrowRight') goToNext();
+            if (e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                if (optionIndex < 4) selectOption(optionIndex);
+            }
+        });
+
+        // Start
+        loadQuizData();
+    </script>
+</body>
+</html>
