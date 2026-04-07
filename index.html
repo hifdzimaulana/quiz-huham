@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz UTS Hukum & HAM</title>
     <style>
+        :root {
+            --bg-primary: #f5f5f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f0f0;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-tertiary: #a1a1a6;
+            --accent: #007aff;
+            --accent-light: rgba(0, 122, 255, 0.1);
+            --success: #34c759;
+            --success-light: rgba(52, 199, 89, 0.15);
+            --error: #ff3b30;
+            --error-light: rgba(255, 59, 48, 0.15);
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius: 18px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #000000;
+                --bg-secondary: #1c1c1e;
+                --bg-tertiary: #2c2c2e;
+                --text-primary: #f5f5f7;
+                --text-secondary: #98989d;
+                --text-tertiary: #636366;
+                --border: rgba(255, 255, 255, 0.1);
+                --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+                --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.6);
+                --accent-light: rgba(0, 122, 255, 0.2);
+                --success-light: rgba(52, 199, 89, 0.2);
+                --error-light: rgba(255, 59, 48, 0.2);
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,216 +51,304 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--bg-primary);
             min-height: 100vh;
             padding: 20px;
+            color: var(--text-primary);
+            line-height: 1.5;
+            transition: background var(--transition), color var(--transition);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             overflow: hidden;
+            transition: background var(--transition), box-shadow var(--transition);
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 32px 28px;
+            border-bottom: 1px solid var(--border);
+            transition: background var(--transition), border var(--transition);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .header-text h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .header-text p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .stat-pill span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .stat-pill.score {
+            background: var(--accent);
             color: white;
-            padding: 30px;
-            text-align: center;
+            border: none;
         }
 
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            opacity: 0.9;
+        .stat-pill.score span {
+            color: white;
             font-size: 1rem;
         }
 
         .main-content {
             display: flex;
             flex-direction: column;
-            padding: 30px;
-            gap: 30px;
+            padding: 28px;
+            gap: 24px;
         }
 
         .navigation-panel {
-            background: #f8f9fa;
-            border-radius: 15px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
             padding: 20px;
-            border: 2px solid #e9ecef;
+            transition: background var(--transition);
         }
 
         .nav-title {
-            font-size: 1.1rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 15px;
-            text-align: center;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
-            padding: 5px;
+            padding: 4px;
+        }
+
+        .nav-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .nav-grid::-webkit-scrollbar-thumb {
+            background: var(--text-tertiary);
+            border-radius: 2px;
         }
 
         .nav-btn {
-            width: 45px;
-            height: 45px;
-            border: 2px solid #dee2e6;
-            background: white;
+            min-width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--bg-secondary);
             border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
-            color: #495057;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .nav-btn:hover {
-            background: #e9ecef;
-            transform: scale(1.1);
-            border-color: #adb5bd;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+            color: var(--accent);
         }
 
         .nav-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--accent);
             color: white;
-            border-color: #667eea;
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transform: scale(1.08);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.4);
         }
 
         .nav-btn.answered-correct {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid var(--success);
         }
 
         .nav-btn.answered-wrong {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
+            background: var(--error-light);
+            color: var(--error);
+            border: 1px solid var(--error);
         }
 
         .nav-btn.answered-correct.active,
         .nav-btn.answered-wrong.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--accent);
             color: white;
-            border-color: #667eea;
+            border: none;
         }
 
         .question-area {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            border: 2px solid #e9ecef;
-            min-height: 400px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border);
+            min-height: 380px;
+            transition: all var(--transition);
         }
 
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
 
         .question-number {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .progress {
-            font-size: 0.9rem;
-            color: #6c757d;
-            background: #f8f9fa;
-            padding: 5px 15px;
-            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            background: var(--bg-tertiary);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-weight: 500;
         }
 
         .question-text {
             font-size: 1.2rem;
-            line-height: 1.6;
-            color: #212529;
-            margin-bottom: 30px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 28px;
             font-weight: 500;
+            letter-spacing: -0.01em;
         }
 
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .option-btn {
             display: flex;
             align-items: center;
             padding: 18px 20px;
-            border: 2px solid #dee2e6;
-            background: white;
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
             text-align: left;
             font-size: 1rem;
-            color: #495057;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-light);
+            opacity: 0;
+            transition: opacity var(--transition);
         }
 
         .option-btn:hover:not(.revealed) {
-            background: #f8f9fa;
-            border-color: #adb5bd;
-            transform: translateX(5px);
+            border-color: var(--accent);
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.15);
+        }
+
+        .option-btn:hover:not(.revealed)::before {
+            opacity: 1;
         }
 
         .option-letter {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 35px;
-            height: 35px;
-            background: #e9ecef;
-            border-radius: 50%;
-            font-weight: 700;
-            margin-right: 15px;
-            color: #495057;
+            width: 32px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 14px;
+            color: var(--text-secondary);
             flex-shrink: 0;
+            transition: all var(--transition);
+            position: relative;
+            z-index: 1;
         }
 
         .option-btn.correct {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
+            background: var(--success-light);
+            border-color: var(--success);
+            animation: correctPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .option-btn.correct .option-letter {
-            background: #28a745;
+            background: var(--success);
             color: white;
         }
 
         .option-btn.wrong {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
+            background: var(--error-light);
+            border-color: var(--error);
+            animation: wrongShake 0.4s ease;
         }
 
         .option-btn.wrong .option-letter {
-            background: #dc3545;
+            background: var(--error);
             color: white;
         }
 
@@ -229,141 +356,150 @@
             cursor: default;
         }
 
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
         .result-display {
-            margin-top: 25px;
+            margin-top: 24px;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-weight: 500;
+            font-size: 1rem;
             display: none;
+            animation: resultSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .result-display.show {
             display: block;
-            animation: fadeIn 0.5s ease;
         }
 
         .result-display.correct {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #28a745;
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid var(--success);
         }
 
         .result-display.wrong {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #dc3545;
+            background: var(--error-light);
+            color: var(--error);
+            border: 1px solid var(--error);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes resultSlide {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .navigation-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 30px;
+            margin-top: 28px;
             padding-top: 20px;
-            border-top: 2px solid #e9ecef;
+            border-top: 1px solid var(--border);
+            gap: 12px;
         }
 
         .nav-arrow {
-            padding: 12px 30px;
+            padding: 14px 24px;
             border: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 25px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .nav-arrow:hover:not(:disabled) {
+            background: var(--accent);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
         }
 
         .nav-arrow:disabled {
-            background: #adb5bd;
+            opacity: 0.4;
             cursor: not-allowed;
-            opacity: 0.6;
         }
 
         .reset-btn {
-            padding: 10px 25px;
-            border: 2px solid #dc3545;
-            background: white;
-            color: #dc3545;
-            border-radius: 25px;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 12px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: all var(--transition);
         }
 
         .reset-btn:hover {
-            background: #dc3545;
-            color: white;
-        }
-
-        .stats {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .stat-item {
-            background: #f8f9fa;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #495057;
-        }
-
-        .stat-item span {
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .percentage-stat {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .percentage-stat span {
-            color: #ffd700;
-            font-size: 1.1rem;
+            border-color: var(--error);
+            color: var(--error);
+            background: var(--error-light);
         }
 
         @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+            }
+
+            .stats-bar {
+                justify-content: center;
             }
 
             .nav-grid {
-                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                justify-content: center;
             }
 
             .nav-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
+                min-width: 36px;
+                height: 36px;
+                font-size: 0.8rem;
             }
 
             .question-text {
-                font-size: 1rem;
+                font-size: 1.05rem;
             }
 
             .option-btn {
-                padding: 15px;
+                padding: 14px 16px;
+            }
+
+            .navigation-controls {
+                flex-wrap: wrap;
+            }
+
+            .nav-arrow {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -371,19 +507,23 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Quiz UTS Hukum & HAM</h1>
-            <p>Uji pemahaman Anda tentang Hukum dan Hak Asasi Manusia</p>
-            <div class="stats">
-                <div class="stat-item">Total: <span id="totalQuestions">133</span></div>
-                <div class="stat-item">Terjawab: <span id="answeredCount">0</span></div>
-                <div class="stat-item">Benar: <span id="correctCount">0</span></div>
-                <div class="stat-item percentage-stat">Skor: <span id="percentage">0%</span></div>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Quiz UTS Hukum & HAM</h1>
+                    <p>Uji pemahaman Anda tentang Hukum dan Hak Asasi Manusia</p>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-pill">Total <span id="totalQuestions">133</span></div>
+                <div class="stat-pill">Terjawab <span id="answeredCount">0</span></div>
+                <div class="stat-pill">Benar <span id="correctCount">0</span></div>
+                <div class="stat-pill score">Skor <span id="percentage">0%</span></div>
             </div>
         </div>
 
         <div class="main-content">
             <div class="navigation-panel">
-                <div class="nav-title">🎯 Navigasi Soal (Klik nomor untuk loncat)</div>
+                <div class="nav-title">Navigasi Soal</div>
                 <div class="nav-grid" id="navGrid"></div>
             </div>
 
@@ -403,9 +543,9 @@
                     <button class="nav-arrow" id="prevBtn" onclick="goToPrev()">
                         ← Sebelumnya
                     </button>
-                    <button class="reset-btn" onclick="resetQuiz()">🔄 Reset</button>
+                    <button class="reset-btn" onclick="resetQuiz()">Reset</button>
                     <button class="nav-arrow" id="nextBtn" onclick="goToNext()">
-                        Selanjutnya →
+                        Berikutnya →
                     </button>
                 </div>
             </div>
@@ -421,19 +561,16 @@
             init();
         }
 
-        // State
         let currentQuestion = 0;
-        let userAnswers = {}; // questionIndex -> selectedOption
-        let revealed = {}; // questionIndex -> boolean
+        let userAnswers = {};
+        let revealed = {};
 
-        // Initialize
         function init() {
             createNavigation();
             loadQuestion(0);
             updateStats();
         }
 
-        // Create navigation grid
         function createNavigation() {
             const navGrid = document.getElementById('navGrid');
             navGrid.innerHTML = '';
@@ -448,17 +585,14 @@
             });
         }
 
-        // Load question
         function loadQuestion(index) {
             currentQuestion = index;
             const question = quizData.questions[index];
 
-            // Update navigation highlight
             document.querySelectorAll('.nav-btn').forEach((btn, i) => {
                 btn.classList.remove('active', 'answered-correct', 'answered-wrong');
                 if (i === index) btn.classList.add('active');
 
-                // Mark answered questions with correct/wrong color
                 if (userAnswers[i] !== undefined && revealed[i]) {
                     const q = quizData.questions[i];
                     const letters = ['a', 'b', 'c', 'd'];
@@ -467,12 +601,10 @@
                 }
             });
 
-            // Update question display
             document.getElementById('questionNumber').textContent = `Soal #${index + 1}`;
             document.getElementById('progress').textContent = `${index + 1} / ${quizData.questions.length}`;
             document.getElementById('questionText').textContent = question.text;
 
-            // Create options
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
 
@@ -484,7 +616,6 @@
                 btn.onclick = () => selectOption(i);
                 btn.id = `option-${i}`;
 
-                // If already answered, show result
                 if (revealed[index]) {
                     btn.classList.add('revealed');
                     if (letters[i] === question.answer) {
@@ -497,38 +628,33 @@
                 optionsContainer.appendChild(btn);
             });
 
-            // Show result if already answered
             const resultDisplay = document.getElementById('resultDisplay');
             if (revealed[index]) {
                 const isCorrect = letters[userAnswers[index]] === question.answer;
                 resultDisplay.className = `result-display show ${isCorrect ? 'correct' : 'wrong'}`;
                 resultDisplay.innerHTML = isCorrect 
-                    ? '✅ Benar! Jawaban Anda tepat.' 
-                    : `❌ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
+                    ? '✓ Benar! Jawaban Anda tepat.' 
+                    : `✗ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
             } else {
                 resultDisplay.className = 'result-display';
                 resultDisplay.innerHTML = '';
             }
 
-            // Update navigation buttons
             document.getElementById('prevBtn').disabled = index === 0;
             document.getElementById('nextBtn').disabled = index === quizData.questions.length - 1;
         }
 
-        // Select option
         function selectOption(optionIndex) {
-            if (revealed[currentQuestion]) return; // Already answered
+            if (revealed[currentQuestion]) return;
 
             const question = quizData.questions[currentQuestion];
             const letters = ['a', 'b', 'c', 'd'];
             const selectedLetter = letters[optionIndex];
             const isCorrect = selectedLetter === question.answer;
 
-            // Store answer
             userAnswers[currentQuestion] = optionIndex;
             revealed[currentQuestion] = true;
 
-            // Update option styles
             document.querySelectorAll('.option-btn').forEach((btn, i) => {
                 btn.classList.add('revealed');
                 if (letters[i] === question.answer) {
@@ -538,20 +664,22 @@
                 }
             });
 
-            // Show result
             const resultDisplay = document.getElementById('resultDisplay');
             resultDisplay.className = `result-display show ${isCorrect ? 'correct' : 'wrong'}`;
             resultDisplay.innerHTML = isCorrect 
-                ? '✅ Benar! Jawaban Anda tepat.' 
-                : `❌ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
+                ? '✓ Benar! Jawaban Anda tepat.' 
+                : `✗ Salah. Jawaban yang benar adalah <strong>${question.answer.toUpperCase()}</strong>`;
 
-            // Update navigation with correct/wrong color
             const navBtn = document.getElementById(`nav-${currentQuestion}`);
             navBtn.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+            
+            if (navigator.vibrate) {
+                navigator.vibrate(isCorrect ? [50] : [100, 50, 100]);
+            }
+            
             updateStats();
         }
 
-        // Navigation functions
         function goToPrev() {
             if (currentQuestion > 0) {
                 loadQuestion(currentQuestion - 1);
@@ -564,7 +692,6 @@
             }
         }
 
-        // Reset quiz
         function resetQuiz() {
             if (confirm('Yakin ingin mereset semua jawaban?')) {
                 userAnswers = {};
@@ -578,7 +705,6 @@
             }
         }
 
-        // Update statistics
         function updateStats() {
             const answered = Object.keys(userAnswers).length;
             let correct = 0;
@@ -591,7 +717,6 @@
                 }
             });
 
-            // Calculate percentage
             const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
 
             document.getElementById('answeredCount').textContent = answered;
@@ -599,7 +724,6 @@
             document.getElementById('percentage').textContent = percentage + '%';
         }
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') goToPrev();
             if (e.key === 'ArrowRight') goToNext();
@@ -609,7 +733,6 @@
             }
         });
 
-        // Start
         loadQuizData();
     </script>
 </body>
